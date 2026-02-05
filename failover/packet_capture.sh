@@ -2,7 +2,8 @@
 #
 # Filename: packet_capture.sh
 #
-# Author: Calin Schurig on 5 Februrary, 2025
+# Author: Calin Schurig on 5 February, 2025
+# Reviewer: Chase Miner on 5 February, 2025
 #
 # Usage: packet_capture.sh [-o OUTPUT_DIR] [interface]
 #
