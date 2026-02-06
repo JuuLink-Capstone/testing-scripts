@@ -1,3 +1,4 @@
+#!/bin/bash
 ##########################################################################
 #
 # Filename: packet_capture.sh
@@ -5,7 +6,7 @@
 # Author: Calin Schurig on 5 February, 2025
 # Reviewer: Chase Miner on 5 February, 2025
 #
-# Usage: packet_capture.sh [-o OUTPUT_DIR] [interface]
+# Usage: packet_capture.sh [-o OUTPUT_DIR] [interfaces...]
 #
 # Description: This script is responsible for starting packet capture on
 #   the WANulator. It uses the tshark cli utility to start and configure
@@ -27,12 +28,7 @@ done
 
 shift $((OPTIND - 1))
 
-if [ "$#" -gt 1 ]; then
-    echo "Error: expected at most 1 argument, got $#" >&2
-    echo "Usage: $0 [-o OUTPUT_DIR] [interface]" >&2
-fi
-
-interface="$1"
+interfaces="$@"
 
 if ! [ "$(whatis tshark)" ]; then
     echo "Error: tshark not found. tshark is required to run this script." >&2
@@ -52,15 +48,15 @@ start_tshark() {
 
 trap 'kill $(jobs -p)' EXIT # Kill all child processes on exit.
 
-if [ $interface ]; then
-    start_tshark $interface
-else
-    # loops through all interfaces listed by ip link
-    DATE=$(date -I"seconds")
-    for interface in $(ip -o link show | awk -F': ' '!/lo|vir|^[^0-9]/ {print $2}'); do
-        start_tshark $interface &
-    done
+if ! [ "$interfaces" ]; then
+    interfaces="$(ip -o link show | awk -F': ' '!/lo|vir|^[^0-9]/ {print $2}')"
 fi
+
+# loops through all interfaces listed by ip link
+DATE=$(date -I"seconds")
+for interface in $interfaces ; do
+    start_tshark $interface &
+done
 
 while [ "true" ]; do
     echo "Capturing packets..."
