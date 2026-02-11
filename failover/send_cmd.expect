@@ -1,0 +1,35 @@
+#!/usr/bin/expect -f
+#################################################################
+#
+# Filename: send_cmd.expect
+# Author: Calin Schurig, 11 February 2026
+#
+# Descrition: This script sends a command on a qm serial socket.
+#
+#################################################################
+
+
+
+
+set timeout 20
+
+set vm        [lindex $argv 0]
+set password  [lindex $argv 1]
+set command   [lindex $argv 2]
+
+set socket "/var/run/qemu-server/$vm.serial0"
+
+spawn socat -,raw,echo=0 UNIX-CONNECT:$socket
+
+# expect "login:"
+send "root\r"
+
+expect "Password:"
+send "$password\r"
+
+expect "# "
+send "$command\r"
+
+expect "# "
+send "exit\r"
+
