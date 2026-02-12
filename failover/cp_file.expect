@@ -1,0 +1,55 @@
+#!/usr/bin/expect -f
+#################################################################
+#
+# Filename: cp_file.expect
+# Author: Calin Schurig, 12 February 2026
+#
+# Descrition: This script copies a file over a qm serial socket.
+#
+# Usage: cp_file.expect <vm_num> <password> <source> [destination]
+# Example: cp_file.expect 100 wanulator my_file /dest/ination.txt
+#
+#################################################################
+
+
+
+set timeout 20
+
+set vm        [lindex $argv 0]
+set password  [lindex $argv 1]
+set source    [lindex $argv 2]
+set dest      [lindex $argv 3]
+
+if {[catch {open "$source" r} f]} {
+    puts "Failed to open file $source"
+    exit 1
+}
+
+set contents [read $f]
+close $f
+
+if {![info exists dest] || $dest eq ""} {
+    set dest [file tail $source]
+}
+
+set socket "/var/run/qemu-server/$vm.serial0"
+
+spawn socat -,raw,echo=0 UNIX-CONNECT:$socket
+
+# expect "login:"
+send "root\r"
+
+expect "Password:"
+send "$password\r"
+
+expect "# "
+
+set encoded [binary encode base64 $contents]
+
+send -- "base64 -d > $dest <<'EOF'\r"
+send -- "$encoded\r"
+send -- "EOF\r"
+
+expect "# "
+send "exit\r"
+

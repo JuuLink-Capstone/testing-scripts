@@ -6,6 +6,9 @@
 #
 # Descrition: This script sends a command on a qm serial socket.
 #
+# Usage: send_cmd.expect <vm_num> <password> <command>
+# Example: sendcmd.expect 100 wanulator "touch temporary_file.txt"
+#
 #################################################################
 
 
@@ -15,7 +18,7 @@ set timeout 20
 
 set vm        [lindex $argv 0]
 set password  [lindex $argv 1]
-set command   [lindex $argv 2]
+set command   [join [lrange $argv 2 end] " "]
 
 set socket "/var/run/qemu-server/$vm.serial0"
 
