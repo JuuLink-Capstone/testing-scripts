@@ -1,0 +1,31 @@
+name: test
+jobs:
+  - host: pve
+    run_after_sec: 1
+    run_after_min: 0
+    run_after_hr: 0
+    workdir: ~/git/testing-scripts
+    logfile: 
+    commands:
+      - echo "Starting test at time $(date)"
+      # - cd ~/git/testing-scripts
+      - touch iwashere.tmp
+      - echo wow there bud > iwashere.tmp
+
+  - host: juulink-edge-1
+    run_after_sec: 1
+    run_after_min: 0
+    run_after_hr: 0
+    workdir: "~"
+    logfile: 
+    commands:
+      - echo "Starting test at time $(date)"
+      # - cd ~/git/testing-scripts
+      - touch iwashere.tmp
+      - echo testin juulink-edge-1 > iwashere.tmp
+
+  # - host: 192.168.1.50
+  #   run_after: 2h
+  #   commands:
+  #     - echo "Cleaning temp files"
+  #     - rm -rf /tmp/*

@@ -1,0 +1,153 @@
+#!/usr/bin/env python3
+##########################################################################
+#
+# Filename: runner.py
+# Author: Calin Schurig on 13 Feb 2026
+#
+# Description: Schedules commands to run on different hosts at different 
+#
+#
+##########################################################################
+"""
+YAML → SSH → at job scheduler
+
+Reads a YAML file describing jobs, then:
+1. Connects to the specified host via SSH
+2. Schedules the commands using the remote `at` command with a relative time
+
+Usage:
+    python yaml_ssh_at_runner.py jobs.yaml
+
+Requirements:
+    pip install pyyaml
+
+Assumptions:
+- SSH key auth is already configured
+- `at` and `atd` are installed on remote hosts
+"""
+
+import sys
+import subprocess
+import shlex
+from pathlib import Path
+from typing import List, Dict, Any
+from datetime import datetime, timedelta
+import os
+
+import yaml
+
+
+def die(msg: str) -> None:
+    print(f"Error: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def load_yaml(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        die(f"YAML file not found: {path}")
+
+    with path.open("r", encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+
+def build_script(job: Dict[str, Any]) -> str:
+    """Create a bash script to run remotely."""
+
+    lines: List[str] = ["set -e"]
+
+    # Optional working directory
+    workdir = job.get("workdir")
+    if workdir:
+        lines.append(f"cd {workdir}")
+
+    # Optional environment variables
+    env = job.get("env", {})
+    for key, value in env.items():
+        lines.append(f"export {key}={shlex.quote(str(value))}")
+
+    # Commands
+    commands = job.get("commands")
+    if not commands:
+        die(f"Job '{job.get('name', '<unnamed>')}' has no commands")
+
+    lines.extend(commands)
+    print(lines)
+    return "\n".join(lines)
+
+
+def schedule_job(job: Dict[str, Any], time: datetime = datetime.now()) -> None:
+    host = job.get("host")
+    if not host:
+        die("Job missing 'host'")
+
+    run_after_sec = job.get("run_after_sec")
+    run_after_min = job.get("run_after_min")
+    run_after_hr = job.get("run_after_hr")
+    if None == run_after_sec:
+        die(f"Job '{job.get('name', '<unnamed>')}' missing 'run_after_sec'")
+    if None == run_after_min:
+        die(f"Job '{job.get('name', '<unnamed>')}' missing 'run_after_min'")
+    if None == run_after_hr:
+        die(f"Job '{job.get('name', '<unnamed>')}' missing 'run_after_hr'")
+
+    script = build_script(job)
+
+    exec_time = time + timedelta(seconds=run_after_sec, minutes=run_after_min, hours=run_after_hr)
+    # Build remote at command
+    at_time=exec_time.timestamp()
+    remote_cmd = (
+        f"echo bash -c {shlex.quote(script)} | "
+        f"at -t \"$(date -d '@{int(at_time)}' +%Y%m%d%H%M.%S)\""
+    )
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # Path to a file in the same directory
+    ssh_config = os.path.join(script_dir, "ssh_config")
+    ssh_cmd = ["ssh", f"-F{ssh_config}", host, remote_cmd]
+
+    print(f"Scheduling job '{job.get('name', '<unnamed>')}' on {host} ({run_after_min})")
+
+    result = subprocess.run(ssh_cmd)
+
+    if result.returncode != 0:
+        die(f"SSH/at failed for host {host}")
+
+
+def main() -> None:
+    if len(sys.argv) < 2:
+        print("Usage: python yaml_ssh_at_runner.py jobs.yaml [time]")
+        sys.exit(1)
+    elif len(sys.argv) == 2:
+        start_time = datetime.now()
+    else:
+        time_str = " ".join(sys.argv[2:])
+        try:
+            # Ask `date` to normalize the input
+            result = subprocess.run(
+                ["date", "-d", time_str, "+%Y-%m-%d %H:%M:%S"],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+        except subprocess.CalledProcessError:
+            raise ValueError(f"Could not parse time with `date`: {time_str}")
+        normalized = result.stdout.strip()
+        # Reparse into Python datetime
+        start_time = datetime.strptime(normalized, "%Y-%m-%d %H:%M:%S")
+
+    yaml_path = Path(sys.argv[1])
+    data = load_yaml(yaml_path)
+
+
+    jobs = data.get("jobs")
+    if not jobs:
+        die("No 'jobs' found in YAML")
+
+    for job in jobs:
+        schedule_job(job, start_time)
+
+    print("All jobs scheduled.")
+
+
+if __name__ == "__main__":
+    main()

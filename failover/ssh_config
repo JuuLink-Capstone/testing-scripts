@@ -1,0 +1,19 @@
+Host pve
+  Hostname pve
+  User root
+
+Host juulink-edge-1
+  Hostname juulink-edge-1
+  User edge-node
+
+Host juulink-edge-2
+  Hostname juulink-edge-2
+  User edge-node
+
+Host juulink-slu-one
+  Hostname juulink-slu-one
+  User slu-one
+
+Host juulink-slu-two
+  Hostname juulink-slu-two
+  User slu-two
