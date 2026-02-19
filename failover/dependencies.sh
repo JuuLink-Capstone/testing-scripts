@@ -12,7 +12,7 @@
 #
 ##########################################################################
 
-DEPENDENCIES=(at python3-locust tshark)
+DEPENDENCIES=(at python3-locust tshark expect)
 
 if [ "$USER" == root ]; then
     apt install $DEPENDENCIES
