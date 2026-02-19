@@ -1,9 +1,9 @@
 #!/bin/bash
 # Path to locustfile.py
-LOCUSTFILE="locust/locustfile.py"
+LOCUSTFILE="locustfile.py"
 
 # Target host (your local IP website)
-HOST="http://192.168.1.100"
+HOST="http://100.107.5.66"
 
 # Number of users
 USERS=50

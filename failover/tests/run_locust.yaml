@@ -1,0 +1,13 @@
+name: basic_test
+jobs:
+  - host: juulink-edge-1
+    run_after_sec: 0
+    run_after_min: 0
+    run_after_hr: 0
+    workdir: ~/tests/locust_test
+    cp_files:
+      - ../../locust/locustfile.py
+      - ../../locust/run_locust.sh
+    commands:
+      - echo "Starting test at time $(date)" >> locust_test.log
+      - ./run_locust.sh

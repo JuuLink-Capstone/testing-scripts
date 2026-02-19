@@ -111,6 +111,14 @@ def schedule_job(job: Dict[str, Any], yaml_path: Path, time: datetime = datetime
     # Path to a file in the same directory
     ssh_config = os.path.join(script_dir, "ssh_config")
 
+    # Create working directory before copying files
+    if isinstance(workdir, str):
+        mkdir_cmd = ["ssh", f"-F{ssh_config}", host, f"mkdir -p {workdir}"]
+        print(f"Creating workdir: {workdir}")
+        result = subprocess.run(mkdir_cmd)
+        if result.returncode != 0:
+            die(f"Failed to create workdir {workdir} on host {host}")
+
     cp_files = job.get("cp_files")
     if cp_files:
         for source_file in cp_files:

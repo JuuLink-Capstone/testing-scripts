@@ -33,3 +33,15 @@ jobs:
       - ./cp_file.expect 100 wanulator good.wcfg
       - ./send_cmd.expect 100 wanulator ~/wanulator2-headless -dc good.wcfg
       - pkill -SIGINT packet_capture.sh
+
+  - host: juulink-edge-1
+    run_after_sec: 0
+    run_after_min: 5
+    run_after_hr: 0
+    workdir: ~/tests/locust_test
+    cp_files:
+      - ../../locust/locustfile.py
+      - ../../locust/run_locust.sh
+    commands:
+      - echo "Starting test at time $(date)" >> locust_test.log
+      - ./run_locust.sh
