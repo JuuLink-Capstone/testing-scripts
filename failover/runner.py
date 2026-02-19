@@ -104,7 +104,7 @@ def schedule_job(job: Dict[str, Any], yaml_path: Path, time: datetime = datetime
     # Optional working directory
     workdir = job.get("workdir")
     if isinstance(workdir, str):
-        remote_cmd = f"cd {workdir}; " + remote_cmd
+        remote_cmd = f"mkdir -p {workdir}; cd {workdir}; " + remote_cmd
         print(f"remote_cmd: {remote_cmd}")
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
