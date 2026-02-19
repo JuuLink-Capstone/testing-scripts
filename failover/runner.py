@@ -58,11 +58,6 @@ def build_script(job: Dict[str, Any]) -> str:
 
     lines: List[str] = ["set -e"]
 
-    # Optional working directory
-    workdir = job.get("workdir")
-    if workdir:
-        lines.append(f"cd {workdir}")
-
     # Optional environment variables
     env = job.get("env", {})
     for key, value in env.items():
@@ -78,10 +73,13 @@ def build_script(job: Dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def schedule_job(job: Dict[str, Any], time: datetime = datetime.now()) -> None:
+def schedule_job(job: Dict[str, Any], yaml_path: Path, time: datetime = datetime.now()) -> None:
     host = job.get("host")
     if not host:
         die("Job missing 'host'")
+    if not isinstance(host, str):
+        die("'host' is wrong type, expected str")
+    assert isinstance(host, str)
 
     run_after_sec = job.get("run_after_sec")
     run_after_min = job.get("run_after_min")
@@ -103,9 +101,29 @@ def schedule_job(job: Dict[str, Any], time: datetime = datetime.now()) -> None:
         f"at -t \"$(date -d '@{int(at_time)}' +%Y%m%d%H%M.%S)\""
     )
 
+    # Optional working directory
+    workdir = job.get("workdir")
+    if isinstance(workdir, str):
+        remote_cmd = f"cd {workdir}; " + remote_cmd
+        print(f"remote_cmd: {remote_cmd}")
+
     script_dir = os.path.dirname(os.path.abspath(__file__))
     # Path to a file in the same directory
     ssh_config = os.path.join(script_dir, "ssh_config")
+
+    cp_files = job.get("cp_files")
+    if cp_files:
+        for source_file in cp_files:
+            source_file = yaml_path.parent / source_file
+            destination_path = ""
+            if isinstance(workdir, str):
+                destination_path = ":" + workdir
+            scp_cmd = ["scp", f"-F{ssh_config}", source_file, f"{host}{destination_path}"]
+            print(f"scp_cmd: {scp_cmd}")
+            result = subprocess.run(scp_cmd)
+            if result.returncode != 0:
+                die(f"SCP failed for host {host} with file {source_file}")
+
     ssh_cmd = ["ssh", f"-F{ssh_config}", host, remote_cmd]
 
     print(f"Scheduling job '{job.get('name', '<unnamed>')}' on {host} ({run_after_min})")
@@ -147,7 +165,7 @@ def main() -> None:
         die("No 'jobs' found in YAML")
 
     for job in jobs:
-        schedule_job(job, start_time)
+        schedule_job(job, yaml_path, start_time)
 
     print("All jobs scheduled.")
 

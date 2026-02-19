@@ -1,28 +1,30 @@
 name: test
 jobs:
-  - host: pve
+  - host: localhost
     run_after_sec: 1
     run_after_min: 0
     run_after_hr: 0
     workdir: ~/git/testing-scripts
     logfile: 
+    cp_files: # cp_files are pathed relative to the .yaml file, copied into the workdir
+      - example_file.txt
     commands:
       - echo "Starting test at time $(date)"
       # - cd ~/git/testing-scripts
       - touch iwashere.tmp
       - echo wow there bud > iwashere.tmp
 
-  - host: juulink-edge-1
-    run_after_sec: 1
-    run_after_min: 0
-    run_after_hr: 0
-    workdir: "~"
-    logfile: 
-    commands:
-      - echo "Starting test at time $(date)"
-      # - cd ~/git/testing-scripts
-      - touch iwashere.tmp
-      - echo testin juulink-edge-1 > iwashere.tmp
+  # - host: juulink-edge-1
+  #   run_after_sec: 1
+  #   run_after_min: 0
+  #   run_after_hr: 0
+  #   workdir: "~"
+  #   logfile: 
+  #   commands:
+  #     - echo "Starting test at time $(date)"
+  #     # - cd ~/git/testing-scripts
+  #     - touch iwashere.tmp
+  #     - echo testin juulink-edge-1 > iwashere.tmp
 
   # - host: 192.168.1.50
   #   run_after: 2h
