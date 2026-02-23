@@ -73,7 +73,9 @@ def build_script(job: Dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def schedule_job(job: Dict[str, Any], yaml_path: Path, time: datetime = datetime.now()) -> None:
+def schedule_job(
+    job: Dict[str, Any], yaml_path: Path, time: datetime = datetime.now()
+) -> None:
     host = job.get("host")
     if not host:
         die("Job missing 'host'")
@@ -93,9 +95,11 @@ def schedule_job(job: Dict[str, Any], yaml_path: Path, time: datetime = datetime
 
     script = build_script(job)
 
-    exec_time = time + timedelta(seconds=run_after_sec, minutes=run_after_min, hours=run_after_hr)
+    exec_time = time + timedelta(
+        seconds=run_after_sec, minutes=run_after_min, hours=run_after_hr
+    )
     # Build remote at command
-    at_time=exec_time.timestamp()
+    at_time = exec_time.timestamp()
     remote_cmd = (
         f"echo bash -c {shlex.quote(script)} | "
         f"at -t \"$(date -d '@{int(at_time)}' +%Y%m%d%H%M.%S)\""
@@ -126,7 +130,12 @@ def schedule_job(job: Dict[str, Any], yaml_path: Path, time: datetime = datetime
             destination_path = ""
             if isinstance(workdir, str):
                 destination_path = ":" + workdir
-            scp_cmd = ["scp", f"-F{ssh_config}", source_file, f"{host}{destination_path}"]
+            scp_cmd = [
+                "scp",
+                f"-F{ssh_config}",
+                source_file,
+                f"{host}{destination_path}",
+            ]
             print(f"scp_cmd: {scp_cmd}")
             result = subprocess.run(scp_cmd)
             if result.returncode != 0:
@@ -134,7 +143,9 @@ def schedule_job(job: Dict[str, Any], yaml_path: Path, time: datetime = datetime
 
     ssh_cmd = ["ssh", f"-F{ssh_config}", host, remote_cmd]
 
-    print(f"Scheduling job '{job.get('name', '<unnamed>')}' on {host} ({run_after_min})")
+    print(
+        f"Scheduling job '{job.get('name', '<unnamed>')}' on {host} ({run_after_min})"
+    )
 
     result = subprocess.run(ssh_cmd)
 
@@ -166,7 +177,6 @@ def main() -> None:
 
     yaml_path = Path(sys.argv[1])
     data = load_yaml(yaml_path)
-
 
     jobs = data.get("jobs")
     if not jobs:
