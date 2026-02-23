@@ -1,4 +1,5 @@
 #!/bin/bash
+# Usage: run_locust.sh [RUN_TIME]
 set -e  # Exit immediately if a command fails
 
 # ====== CONFIG ======
@@ -10,6 +11,10 @@ USERS=50
 SPAWN_RATE=5
 RUN_TIME="3m"
 CSV_PREFIX="results"
+
+if [ $1 ]; then
+  RUN_TIME="$1"
+fi
 
 # ====== SETUP VENV ======
 
