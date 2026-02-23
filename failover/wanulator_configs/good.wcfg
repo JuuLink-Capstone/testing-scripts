@@ -6,7 +6,7 @@
    <Params Speed="0"/>
   </SimFn>
  </Interface>
- <Interface UseDHCP="0" IpMask="0" IpAddr="0.0.0.0" Name="ens20">
+ <Interface UseDHCP="0" IpMask="0" IpAddr="0.0.0.0" Name="ens18">
   <SimFn Filter="0" Name="Limit" Type="6">
    <Timing Chance="0" Burst="1" Type="0" Static="0"/>
    <Params Speed="0"/>

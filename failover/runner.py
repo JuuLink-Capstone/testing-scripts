@@ -136,20 +136,13 @@ def schedule_job(
             destination_path = ""
             if isinstance(workdir, str):
                 destination_path = ":" + workdir
-<<<<<<< HEAD
+        
             scp_cmd = [
                 "scp",
                 f"-F{ssh_config}",
                 source_file,
                 f"{host}{destination_path}",
             ]
-=======
-            scp_cmd = ["scp", f"-F{ssh_config}", source_file, f"{host}{destination_path}"]
-            ssh_mkdir_p_cmd = ["ssh", f"-F{ssh_config}", f"{host}", f"mkdir -p {workdir}"]
-            result = subprocess.run(ssh_mkdir_p_cmd)
-            if result.returncode != 0:
-                die(f"SSH failed for host {host} when creating workdir {workdir}")
->>>>>>> refs/remotes/origin/main
             print(f"scp_cmd: {scp_cmd}")
             result = subprocess.run(scp_cmd)
             if result.returncode != 0:
