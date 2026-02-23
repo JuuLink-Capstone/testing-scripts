@@ -42,6 +42,7 @@ jobs:
     cp_files:
       - ../../locust/locustfile.py
       - ../../locust/run_locust.sh
+      - ../../locust/requirements.txt
     commands:
       - echo "Starting test at time $(date)" >> locust_test.log
       - ./run_locust.sh
