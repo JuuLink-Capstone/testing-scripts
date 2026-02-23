@@ -36,7 +36,8 @@ set socket "/var/run/qemu-server/$vm.serial0"
 
 spawn socat -,raw,echo=0 UNIX-CONNECT:$socket
 
-# expect "login:"
+send "\r"
+expect "login:"
 send "root\r"
 
 expect "Password:"

@@ -53,7 +53,7 @@ def load_yaml(path: Path) -> Dict[str, Any]:
         return yaml.safe_load(f)
 
 
-def build_script(job: Dict[str, Any]) -> str:
+def build_script(job: Dict[str, Any], time: datetime = datetime.now()) -> str:
     """Create a bash script to run remotely."""
 
     lines: List[str] = ["set -e"]
@@ -67,6 +67,12 @@ def build_script(job: Dict[str, Any]) -> str:
     commands = job.get("commands")
     if not commands:
         die(f"Job '{job.get('name', '<unnamed>')}' has no commands")
+
+    logfile = job.get("logfile")
+    if logfile:
+        lines.append(f"exec >>{shlex.quote(logfile + "." + str(int(time.timestamp())))} 2>&1")
+
+    lines.append("set -x") # Shows trace information, which commands are executed
 
     lines.extend(commands)
     print(lines)
@@ -93,7 +99,7 @@ def schedule_job(
     if None == run_after_hr:
         die(f"Job '{job.get('name', '<unnamed>')}' missing 'run_after_hr'")
 
-    script = build_script(job)
+    script = build_script(job, time)
 
     exec_time = time + timedelta(
         seconds=run_after_sec, minutes=run_after_min, hours=run_after_hr
@@ -130,12 +136,20 @@ def schedule_job(
             destination_path = ""
             if isinstance(workdir, str):
                 destination_path = ":" + workdir
+<<<<<<< HEAD
             scp_cmd = [
                 "scp",
                 f"-F{ssh_config}",
                 source_file,
                 f"{host}{destination_path}",
             ]
+=======
+            scp_cmd = ["scp", f"-F{ssh_config}", source_file, f"{host}{destination_path}"]
+            ssh_mkdir_p_cmd = ["ssh", f"-F{ssh_config}", f"{host}", f"mkdir -p {workdir}"]
+            result = subprocess.run(ssh_mkdir_p_cmd)
+            if result.returncode != 0:
+                die(f"SSH failed for host {host} when creating workdir {workdir}")
+>>>>>>> refs/remotes/origin/main
             print(f"scp_cmd: {scp_cmd}")
             result = subprocess.run(scp_cmd)
             if result.returncode != 0:

@@ -5,7 +5,7 @@ jobs:
     run_after_min: 0
     run_after_hr: 0
     workdir: ~/git/testing-scripts
-    logfile: 
+    logfile: test.log
     cp_files: # cp_files are pathed relative to the .yaml file, copied into the workdir
       - example_file.txt
     commands:
