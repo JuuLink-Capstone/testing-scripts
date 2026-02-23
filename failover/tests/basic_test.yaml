@@ -26,6 +26,7 @@ jobs:
     run_after_min: 2
     run_after_hr: 0
     workdir: ~/tests/basic_test
+    logfile: basic_test.log
     cp_files: # cp_files are pathed relative to the .yaml file, copied into the workdir
     commands:
       - echo "Ending test at time $(date)"
