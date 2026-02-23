@@ -79,7 +79,9 @@ def build_script(job: Dict[str, Any], time: datetime = datetime.now()) -> str:
     return "\n".join(lines)
 
 
-def schedule_job(job: Dict[str, Any], yaml_path: Path, time: datetime = datetime.now()) -> None:
+def schedule_job(
+    job: Dict[str, Any], yaml_path: Path, time: datetime = datetime.now()
+) -> None:
     host = job.get("host")
     if not host:
         die("Job missing 'host'")
@@ -99,9 +101,11 @@ def schedule_job(job: Dict[str, Any], yaml_path: Path, time: datetime = datetime
 
     script = build_script(job, time)
 
-    exec_time = time + timedelta(seconds=run_after_sec, minutes=run_after_min, hours=run_after_hr)
+    exec_time = time + timedelta(
+        seconds=run_after_sec, minutes=run_after_min, hours=run_after_hr
+    )
     # Build remote at command
-    at_time=exec_time.timestamp()
+    at_time = exec_time.timestamp()
     remote_cmd = (
         f"echo bash -c {shlex.quote(script)} | "
         f"at -t \"$(date -d '@{int(at_time)}' +%Y%m%d%H%M.%S)\""
@@ -117,6 +121,14 @@ def schedule_job(job: Dict[str, Any], yaml_path: Path, time: datetime = datetime
     # Path to a file in the same directory
     ssh_config = os.path.join(script_dir, "ssh_config")
 
+    # Create working directory before copying files
+    if isinstance(workdir, str):
+        mkdir_cmd = ["ssh", f"-F{ssh_config}", host, f"mkdir -p {workdir}"]
+        print(f"Creating workdir: {workdir}")
+        result = subprocess.run(mkdir_cmd)
+        if result.returncode != 0:
+            die(f"Failed to create workdir {workdir} on host {host}")
+
     cp_files = job.get("cp_files")
     if cp_files:
         for source_file in cp_files:
@@ -124,11 +136,20 @@ def schedule_job(job: Dict[str, Any], yaml_path: Path, time: datetime = datetime
             destination_path = ""
             if isinstance(workdir, str):
                 destination_path = ":" + workdir
+<<<<<<< HEAD
+            scp_cmd = [
+                "scp",
+                f"-F{ssh_config}",
+                source_file,
+                f"{host}{destination_path}",
+            ]
+=======
             scp_cmd = ["scp", f"-F{ssh_config}", source_file, f"{host}{destination_path}"]
             ssh_mkdir_p_cmd = ["ssh", f"-F{ssh_config}", f"{host}", f"mkdir -p {workdir}"]
             result = subprocess.run(ssh_mkdir_p_cmd)
             if result.returncode != 0:
                 die(f"SSH failed for host {host} when creating workdir {workdir}")
+>>>>>>> refs/remotes/origin/main
             print(f"scp_cmd: {scp_cmd}")
             result = subprocess.run(scp_cmd)
             if result.returncode != 0:
@@ -136,7 +157,9 @@ def schedule_job(job: Dict[str, Any], yaml_path: Path, time: datetime = datetime
 
     ssh_cmd = ["ssh", f"-F{ssh_config}", host, remote_cmd]
 
-    print(f"Scheduling job '{job.get('name', '<unnamed>')}' on {host} ({run_after_min})")
+    print(
+        f"Scheduling job '{job.get('name', '<unnamed>')}' on {host} ({run_after_min})"
+    )
 
     result = subprocess.run(ssh_cmd)
 
@@ -168,7 +191,6 @@ def main() -> None:
 
     yaml_path = Path(sys.argv[1])
     data = load_yaml(yaml_path)
-
 
     jobs = data.get("jobs")
     if not jobs:
