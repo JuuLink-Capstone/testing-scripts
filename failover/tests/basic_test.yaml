@@ -5,31 +5,31 @@ jobs:
     run_after_min: 0
     run_after_hr: 0
     workdir: ~/tests/basic_test
+    logfile: basic_test.log
     cp_files: # cp_files are pathed relative to the .yaml file, copied into the workdir
       - ../wanulator_configs/good.wcfg
       - ../send_cmd.expect
       - ../cp_file.expect
       - ../packet_capture.sh
     commands:
-      - echo "Starting test at time $(date)" >> basic_test.log
+      - echo "Starting test at time $(date)"
+      - ls
+      - pwd
       # - cd ~/git/testing-scripts
       - ./cp_file.expect 100 wanulator good.wcfg
       - ./send_cmd.expect 100 wanulator ~/wanulator2-headless -dc good.wcfg
-      - ./packet_capture.sh enp1s0f0 enp1s0f1 enp1s0f2 enp1s0f3 enp2s0f0 enp2s0f1 enp2s0f2 enp2s0f3
+      # - ./packet_capture.sh enp1s0f0 enp1s0f1 enp1s0f2 enp1s0f3 enp2s0f0 enp2s0f1 enp2s0f2 enp2s0f3
 
 
   - host: pve
     run_after_sec: 0
-    run_after_min: 10
+    run_after_min: 2
     run_after_hr: 0
     workdir: ~/tests/basic_test
     cp_files: # cp_files are pathed relative to the .yaml file, copied into the workdir
-      - ../wanulator_configs/good.wcfg
-      - ../send_cmd.expect
-      - ../cp_file.expect
     commands:
-      - echo "Ending test at time $(date)" >> basic_test.log
+      - echo "Ending test at time $(date)"
       # - cd ~/git/testing-scripts
-      - ./cp_file.expect 100 wanulator good.wcfg
+      # - ./cp_file.expect 100 wanulator good.wcfg
       - ./send_cmd.expect 100 wanulator ~/wanulator2-headless -dc good.wcfg
-      - pkill -SIGINT packet_capture.sh
+      # - pkill -SIGINT packet_captu
