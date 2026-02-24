@@ -10,7 +10,14 @@ HOST="http://192.168.100.2"
 USERS=50
 SPAWN_RATE=5
 RUN_TIME="3m"
-CSV_PREFIX="results"
+
+# Create output directory with timestamp subdirectory
+TIMESTAMP=$(date +"%m-%d-%y_%H-%M")
+OUTPUT_DIR="output/$TIMESTAMP"
+mkdir -p "$OUTPUT_DIR"
+
+# Set CSV prefix to write files in the timestamped folder
+CSV_PREFIX="$OUTPUT_DIR/results"
 
 if [ $1 ]; then
   RUN_TIME="$1"
