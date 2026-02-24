@@ -38,12 +38,26 @@ start_tshark() {
     local interface=$1
     local DATE=$2
     if ! [ "$DATE" ]; then
-        DATE=$(date -I"seconds")
+        DATE=$(date +%s)
     fi
-    local log_file="$OUTPUT_DIR/$DATE-$interface.pcapng"
+    local log_file="$OUTPUT_DIR/$interface.$DATE.csv"
     touch $log_file
     chmod o+wr $log_file # tshark runs from a daemon, so log files need to be writable.
-    tshark -i $interface -w $log_file
+    tshark -s 96 -i $interface \
+        -T fields \
+        -E header=y \
+        -E separator=, \
+        -E quote=d \
+        -e _ws.col.Time \
+        -e _ws.col.Source \
+        -e _ws.col.Destination \
+        -e _ws.col.Protocol \
+        -e _ws.col.Length \
+        -e _ws.col.Info \
+        -e frame.number \
+        -e frame.time_epoch \
+        -e frame.len \
+        > $log_file
 }
 
 trap 'kill $(jobs -p)' EXIT # Kill all child processes on exit.
@@ -53,7 +67,7 @@ if ! [ "$interfaces" ]; then
 fi
 
 # loops through all interfaces listed by ip link
-DATE=$(date -I"seconds")
+DATE=$(date +%s)
 for interface in $interfaces ; do
     start_tshark $interface &
 done

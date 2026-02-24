@@ -13,8 +13,9 @@ jobs:
       - ../cp_file.expect
       - ../packet_capture.sh
     commands:
-      - echo "Starting test at time $(date)"
+      - echo "Starting test at time $(date +%s)"
       - ./cp_file.expect 102 wanulator good.wcfg
+      - ./cp_file.expect 102 wanulator drop_0_15.wcfg
       - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc good.wcfg
       - ./packet_capture.sh enp1s0f0 enp1s0f1 enp1s0f2 enp1s0f3 enp2s0f0 enp2s0f1 enp2s0f2 enp2s0f3
 
@@ -28,8 +29,8 @@ jobs:
       - ../../locust/run_locust.sh
       - ../../locust/requirements.txt
     commands:
-      - echo "Starting test at time $(date)" >> locust_test.log
-      - ./run_locust.sh 3m
+      - echo "Starting test at time $(date +%s)" >> locust_test.log
+      - ./run_locust.sh 2m
 
   - host: pve
     run_after_sec: 0
@@ -38,20 +39,20 @@ jobs:
     workdir: ~/tests/fail_starlink_2
     logfile: fail_starlink_2.log
     commands:
-      - echo "Degrading link at time $(date)"
+      - echo "Degrading link at time $(date +%s)"
       # - cd ~/git/testing-scripts
-      - ./cp_file.expect 102 wanulator drop_0_15.wcfg
+      # - ./cp_file.expect 102 wanulator drop_0_15.wcfg
       - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc drop_0_15.wcfg
       # - pkill -SIGINT packet_capture.sh
 
   - host: pve
     run_after_sec: 0
-    run_after_min: 3
+    run_after_min: 2
     run_after_hr: 0
     workdir: ~/tests/fail_starlink_2
     logfile: fail_starlink_2.log
     commands:
-      - echo "Restoring link at time $(date)"
+      - echo "Restoring link at time $(date +%s)"
       # - cd ~/git/testing-scripts
       # - ./cp_file.expect 102 wanulator good.wcfg
       - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc good.wcfg
@@ -59,13 +60,14 @@ jobs:
   
   - host: pve
     run_after_sec: 0
-    run_after_min: 4
+    run_after_min: 3
     run_after_hr: 0
     workdir: ~/tests/fail_starlink_2
     logfile: fail_starlink_2.log
     commands:
-      - echo "Ending packet capture at time $(date)"
+      - echo "Ending packet capture at time $(date +%s)"
       # - ./cp_file.expect 102 wanulator good.wcfg
       # - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc good.wcfg
-      - pkill -SIGINT packet_capt
+      - pkill packet_capt
+      - pkill tshark
     
