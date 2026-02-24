@@ -1,4 +1,5 @@
 #!/bin/bash
+# Usage: run_locust.sh [RUN_TIME]
 set -e  # Exit immediately if a command fails
 
 # ====== CONFIG ======
@@ -17,6 +18,10 @@ mkdir -p "$OUTPUT_DIR"
 
 # Set CSV prefix to write files in the timestamped folder
 CSV_PREFIX="$OUTPUT_DIR/results"
+
+if [ $1 ]; then
+  RUN_TIME="$1"
+fi
 
 # ====== SETUP VENV ======
 
