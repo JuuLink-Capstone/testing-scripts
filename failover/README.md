@@ -27,4 +27,31 @@ One promising option looks like `at`, which can be used to sync everything up, a
 
 We can create an ssh config file with password info and stuff, and then run ssh -F <config> <host>, and it should work just fine.
 
-We can parse yaml using yq. 
+We can parse yaml using pyyaml, or the package python3-yaml.
+
+## Interface mapping
+
+In Versa machine CSG780-R2 [link](https://sase-concerto.poc.versanow.net/app/BYU/view/dashboard/secure-sdwan/overview?12hoursAgo=today=tab=all%20%3E%20Availability&key=value=SDWAN/SDWAN-SITE=12hoursAgo=today=Physical%20and%20Logical%20Interfaces=CSG780-R2%20%3E%20Interfaces&), here are the mappings:
+  * vni-0/0.0: BYU ethernet
+  * vni-0/1.0: Starlink-1
+  * vni-0/2.0: Starlink-2
+
+On the PVE host, the mappings are as follows:
+  * enp1s0f0: (not plugged in)
+  * enp1s0f1: (also not plugged in)
+  * enp1s0f2: To Versa interface 0
+  * enp1s0f3: Coming from BYU
+  * enp2s0f0: Going to Versa interface 2
+  * enp2s0f1: Starlink-2
+  * enp2s0f2: Versa interface 1
+  * enp2s0f3: Going to Starlink-1 
+
+  Versa-0 and BYU are bridged via WANulator
+  Versa-2 and Starlink-2 are bridged via WANulator
+  Versa-1 and Starlink-1 are bridged via WANulator
+
+  In PVE, there are 4 WANulators, each with qm IDs. They linked to physical interfaces as follows:
+  * 100: Not hooked up
+  * 101: Versa-0 and BYU
+  * 102: Versa-2 and Starlink-2
+  * 103: Versa-1 and Starlink-1
