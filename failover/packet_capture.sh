@@ -6,7 +6,7 @@
 # Author: Calin Schurig on 5 February, 2025
 # Reviewer: Chase Miner on 5 February, 2025
 #
-# Usage: packet_capture.sh [-o OUTPUT_DIR] [interfaces...]
+# Usage: packet_capture.sh [-o OUTPUT_DIR] [q] [interfaces...]
 #
 # Description: This script is responsible for starting packet capture on
 #   the WANulator. It uses the tshark cli utility to start and configure
@@ -18,9 +18,10 @@
 
 OUTPUT_DIR=.
 
-while getopts "o:" opt; do
+while getopts "o:q" opt; do
   case $opt in
     o) OUTPUT_DIR="$OPTARG" ;;
+    q) QUIET=1 ;;
     \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
     :) echo "Option -$OPTARG requires an argument." >&2; exit 1 ;;
   esac
@@ -72,7 +73,10 @@ for interface in $interfaces ; do
     start_tshark $interface &
 done
 
+echo "Capturing packets..."
 while [ "true" ]; do
-    echo "Capturing packets..."
     sleep 5
+    if ! [ $QUIET ]; then 
+        echo "Capturing packets..."
+    fi
 done

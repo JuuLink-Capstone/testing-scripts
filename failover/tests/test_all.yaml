@@ -39,7 +39,7 @@ jobs:
       - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc good.wcfg
       - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc good.wcfg
       - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc good.wcfg
-      - ./packet_capture.sh enp1s0f0 enp1s0f1 enp1s0f2 enp1s0f3 enp2s0f0 enp2s0f1 enp2s0f2 enp2s0f3
+      - ./packet_capture.sh -q enp1s0f0 enp1s0f1 enp1s0f2 enp1s0f3 enp2s0f0 enp2s0f1 enp2s0f2 enp2s0f3
 
   - host: juulink-edge-1
     run_after_sec: 30
