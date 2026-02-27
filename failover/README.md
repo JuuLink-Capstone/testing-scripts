@@ -17,21 +17,26 @@ To start a single test, three things need to happen:
 * Traffic generation must be enabled (on the traffic generator).
 * Link degredation must be initiated (on the wanulators).
 
-Because two of those three things happen on the PVE host, I think that the scripts should be run from the PVE host.
+Each tests usually follows the same procedure:
+1. Set each link to good (non-degraded).
+2. Begin capturing packets.
+3. Start traffic generation using Locust.
+4. Degrade the desired link.
+5. Wait a desired amount of time.
+6. Restore the link.
+7. Stop traffic generation.
+8. Stop packet capture.
 
-Ethan proposed a more decentralized test, where messages are sent to schedule different types of tests, and then everything just starts the test at the same time. I think this is probably a good idea. 
+This procedure should allow us to collect all the information we need to analyze different failover patterns and behaviors of both the Versa SD-WAN system, as well as a more traditional routing system using FRR.
 
-Whatever the case, I think the following would be a good way of doing it: have some way of scheduling commands across different devices. This requires a few things:
+Ethan proposed a more decentralized test, where messages are sent to schedule different types of tests, and then everything just starts the test at the same time. This is what we are using. Overall, our testing setup requires the following: 
 
-* A file that defines different hosts and how to access them
-* A way of representing commands on hosts at specified relative times
-* A way of scheduling commands, which probably requires some sort of lingering thingy. 
+* A file that defines different hosts and how to access them ([ssh_config](./ssh_config))
+* A way of representing commands on hosts at specified relative times ([basic_test.yaml](tests/basic_test.yaml))
+* A way of scheduling commands at specific times ([at](https://man7.org/linux/man-pages/man1/at.1p.html))
+* A script to tie it all together ([runner.py](./runner.py))
 
-One promising option looks like `at`, which can be used to sync everything up, at least by the minute. This way, we can just execute commands over ssh, and schedule them all for the same time.
-
-We can create an ssh config file with password info and stuff, and then run ssh -F <config> <host>, and it should work just fine.
-
-We can parse yaml using pyyaml, or the package python3-yaml.
+Most of the logic for our testing setup is contained in `runner.py`. It is responsible for parsing yaml files, which contain which commands should be run on which hosts at which times. Using that information, the script then uses `ssh` to access each host and then schedules commands using the `at` command line utility. 
 
 ## Interface mapping
 
