@@ -42,17 +42,19 @@ jobs:
       - ./packet_capture.sh -q enp1s0f0 enp1s0f1 enp1s0f2 enp1s0f3 enp2s0f0 enp2s0f1 enp2s0f2 enp2s0f3
 
   - host: juulink-edge-1
-    run_after_sec: 30
+    run_after_sec: 0
     run_after_min: 0
     run_after_hr: 0
     workdir: ~/tests/locust_test
+    logfile: test_all_locust.log
     cp_files:
       - ../../locust/locustfile.py
       - ../../locust/run_locust.sh
       - ../../locust/requirements.txt
     commands:
-      - echo "Starting test at time $(date +%s)" >> locust_test.log
-      - ./run_locust.sh 4m
+      - echo "Starting test at time $(date +%s)"
+      - fping -l -i 1 -c 320 192.168.100.2 &
+      - ./run_locust.sh 5m
 
   - host: pve
     run_after_sec: 0
