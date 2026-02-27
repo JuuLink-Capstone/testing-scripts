@@ -9,7 +9,25 @@ This documentation outlines how the Juulink Capstone team modeled internet link 
 
 ## Proxmox setup
 
-TODO: have Mason fill this in.
+The Wanulator iso requires legacy boot options not provided by the hardware in use. Proxmox Virtual Environment is a Linux operating system that acts as a hypervisor. 
+
+We were able to create 4 different virtual machines that allow legacy booting into the Wanulator isos. Each virtual machine was given 4GB of RAM, 2 processors, and 32 GB of space. Because the wanulator iso was made to run on just about anything and stay in RAM, most of the settings were kept as default. No operating system was actually installed onto the VMs.
+
+We added 2 network cards, each with 4 ports, to be able to pass through many different ISPs to our devices. Each physical interface is then assigned to a virtual interface which is assigned to a virtual machine. To make these assignments, we had to edit the configuration file:
+```bash
+nano /etc/network/interfaces
+```
+And we made the following changes for each physical interface, exlcluding the first(nic0) which is used for internet access to the host machine:
+```bash
+auto enp1s0f0 inet manual
+auto vmbr1
+iface vmbr1 inet manual
+        bridge-ports enp1s0f0
+        bridge-stp off
+        bridge-fd 0
+```
+
+Each of 4 virtual machines is given two virtual interfaces to be able to bridge together, which can be seen in the hardware section of the VM.
 
 ## WANulator setup
 
