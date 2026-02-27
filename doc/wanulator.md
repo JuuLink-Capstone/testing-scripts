@@ -19,7 +19,7 @@ To communicate with the WANulator inside of the virtual environment, we used a s
 ```bash
 qm set <VMID> -serial0 socket   
 ```
-* Enable the virtual serial connection in the WANulator boot image (at <WANULATOR_BOOT_IMAGE>/isolinux/isolinux.cfg), which may require repacking:
+* Enable the virtual serial connection in the WANulator boot image (at <WANULATOR_BOOT_IMAGE>/isolinux/isolinux.cfg), which may require repacking. This is done by adding `console=tty console=ttyS0,115200` to the `append` field:
 ```
 DEFAULT live
 SAY Booting WANulator now...
@@ -44,4 +44,9 @@ To execute commands in the WANulator virtual machines, you must first login to t
 * [cp_file.expect](../failover/cp_file.expect)
 
 These helper scripts take three arguments, a VMID number, a password, and a command/file. They automatically login to the VM, execute the command / copy over a file, and then logout, so that the next command can also login.
+
+To change a WANulator configuration remotely, the following flow is used: 
+* ssh into the PVE host (`ssh root@pve`).
+* Copy over a configuration file to the desired WANulator (`./cp_file.expect 101 wanulator wanulator_configs/good.wcfg`).
+* Apply the configuration (`./send_cmd.expect 101 wanulator wanulator2-headless -dc good.wcfg`).
 

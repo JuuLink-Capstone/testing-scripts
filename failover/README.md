@@ -1,3 +1,7 @@
+```
+Author: Calin Schurig on 12 Feb 2026
+```
+
 # Failover Testing
 
 These scripts are created with the goal of automating failover testing. Listed below are the different components of this test, and how different files in this repository relate to each test component.
@@ -40,17 +44,17 @@ On the PVE host, the mappings are as follows:
   * enp1s0f0: (not plugged in)
   * enp1s0f1: (also not plugged in)
   * enp1s0f2: To Versa interface 0
-  * enp1s0f3: Coming from BYU
-  * enp2s0f0: Going to Versa interface 2
-  * enp2s0f1: Starlink-2
-  * enp2s0f2: Versa interface 1
-  * enp2s0f3: Going to Starlink-1 
+  * enp1s0f3: To BYU internet
+  * enp2s0f0: To Versa interface 2
+  * enp2s0f1: To Starlink-2
+  * enp2s0f2: To Versa interface 1
+  * enp2s0f3: To Starlink-1 
 
-  Versa-0 and BYU are bridged via WANulator
-  Versa-2 and Starlink-2 are bridged via WANulator
-  Versa-1 and Starlink-1 are bridged via WANulator
+  Versa-0 and BYU are bridged via WANulator 101
+  Versa-2 and Starlink-2 are bridged via WANulator 102
+  Versa-1 and Starlink-1 are bridged via WANulator 103
 
-  In PVE, there are 4 WANulators, each with qm IDs. They linked to physical interfaces as follows:
+  In PVE, there are 4 WANulators, each with qm IDs. They are linked to physical interfaces as follows:
   * 100: Not hooked up
   * 101: Versa-0 and BYU
   * 102: Versa-2 and Starlink-2

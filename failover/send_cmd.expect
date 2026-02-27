@@ -6,7 +6,7 @@
 #
 # Descrition: This script sends a command on a qm serial socket.
 #
-# Usage: send_cmd.expect <vm_num> <password> <command>
+# Usage: send_cmd.expect <vm_num> <password> <command...>
 # Example: sendcmd.expect 100 wanulator "touch temporary_file.txt"
 #
 #################################################################
