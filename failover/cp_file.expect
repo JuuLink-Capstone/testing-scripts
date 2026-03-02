@@ -5,6 +5,7 @@
 # Author: Calin Schurig, 12 February 2026
 #
 # Descrition: This script copies a file over a qm serial socket.
+#   The qm serial socket expects to be logged out
 #
 # Usage: cp_file.expect <vm_num> <password> <source> [destination]
 # Example: cp_file.expect 100 wanulator my_file /dest/ination.txt

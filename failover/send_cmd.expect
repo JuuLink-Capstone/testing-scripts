@@ -5,6 +5,7 @@
 # Author: Calin Schurig, 11 February 2026
 #
 # Descrition: This script sends a command on a qm serial socket.
+#   The qm serial socket expects to be logged out.
 #
 # Usage: send_cmd.expect <vm_num> <password> <command...>
 # Example: sendcmd.expect 100 wanulator "touch temporary_file.txt"

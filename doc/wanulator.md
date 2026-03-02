@@ -2,7 +2,6 @@
 Created by Calin Schurig on 17 Feb 2026
 ```
 
-
 # Wanulator Configuration
 
 This documentation outlines how the Juulink Capstone team modeled internet link degredation using version 2.4 of the [WANulator](https://wanulator.de/) project. This was done inside of a Proxmox virtual machine.
