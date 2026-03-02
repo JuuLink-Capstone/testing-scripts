@@ -12,7 +12,7 @@
 #
 ##########################################################################
 
-DEPENDENCIES=(at python3-locust tshark expect)
+DEPENDENCIES=(at python3-locust tshark expect fping)
 
 if [ "$USER" == root ]; then
     apt install $DEPENDENCIES
