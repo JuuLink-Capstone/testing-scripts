@@ -114,4 +114,7 @@ jobs:
       # - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc good.wcfg
       - pkill packet_capt
       - pkill tshark
+      - ./send_cmd.expect 101 wanulator pkill wanulator2-h
+      - ./send_cmd.expect 102 wanulator pkill wanulator2-h
+      - ./send_cmd.expect 103 wanulator pkill wanulator2-h
     
