@@ -45,20 +45,20 @@ start_tshark() {
     touch $log_file
     chmod o+wr $log_file # tshark runs from a daemon, so log files need to be writable.
     tshark -s 96 -i $interface \
-        -T fields \
-        -E header=y \
-        -E separator=, \
-        -E quote=d \
-        -e _ws.col.Time \
-        -e _ws.col.Source \
-        -e _ws.col.Destination \
-        -e _ws.col.Protocol \
-        -e _ws.col.Length \
-        -e _ws.col.Info \
-        -e frame.number \
-        -e frame.time_epoch \
-        -e frame.len \
-        > $log_file
+        -e frame.time_epoch > $log_file
+        # -T fields \
+        # -E header=y \
+        # -E separator=, \
+        # -E quote=d \
+        # -e _ws.col.Time \
+        # -e _ws.col.Source \
+        # -e _ws.col.Destination \
+        # -e _ws.col.Protocol \
+        # -e _ws.col.Length \
+        # -e _ws.col.Info \
+        # -e frame.number \
+        # -e frame.len \
+        # > $log_file
 }
 
 trap 'kill $(jobs -p)' EXIT # Kill all child processes on exit.
