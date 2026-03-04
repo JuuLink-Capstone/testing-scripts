@@ -64,3 +64,5 @@ On the PVE host, the mappings are as follows:
   * 101: Versa-0 and BYU
   * 102: Versa-2 and Starlink-2
   * 103: Versa-1 and Starlink-1
+
+On Versa, the link priority is 1.) Starlink-1, 2.) Starlink-2, and 3.) BYU.
