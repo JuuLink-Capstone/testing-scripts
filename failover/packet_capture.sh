@@ -45,13 +45,13 @@ start_tshark() {
     touch $log_file
     chmod o+wr $log_file # tshark runs from a daemon, so log files need to be writable.
     tshark -s 96 -i $interface \
+        -T fields \
+        -E header=y \
+        -E separator=, \
+        -E quote=n \
         -e frame.time_epoch \
-        -e tcp.seq \
         > $log_file
-        # -T fields \
-        # -E header=y \
-        # -E separator=, \
-        # -E quote=d \
+        # -e tcp.seq \
         # -e _ws.col.Time \
         # -e _ws.col.Source \
         # -e _ws.col.Destination \
