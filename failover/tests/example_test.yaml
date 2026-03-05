@@ -1,0 +1,18 @@
+name: example_test
+jobs:
+  - host: pve
+    run_after_sec: 0
+    run_after_min: 0
+    run_after_hr: 0
+    workdir: ~/tests/example_test
+    logfile: example_test.log
+    cp_files: # cp_files are pathed relative to the .yaml file, copied into the workdir
+      - example_file.txt
+    commands:
+      - echo "Starting test at time $(date)"
+      - ls
+      - pwd
+      - cat ./example_file
+      # - cd ~/git/testing-scripts
+      # - ./packet_capture.sh enp1s0f0 enp1s0f1 enp1s0f2 enp1s0f3 enp2s0f0 enp2s0f1 enp2s0f2 enp2s0f3
+
