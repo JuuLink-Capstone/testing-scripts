@@ -114,7 +114,10 @@ jobs:
       # - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc good.wcfg
       - pkill packet_capt
       - pkill tshark
-      - ./send_cmd.expect 101 wanulator 'WANULATOR=$(pgrep wanulator2-h); ~/wanulator2-headless -dc good.wcfg; kill $WANULATOR'
-      - ./send_cmd.expect 102 wanulator 'WANULATOR=$(pgrep wanulator2-h); ~/wanulator2-headless -dc good.wcfg; kill $WANULATOR'
-      - ./send_cmd.expect 103 wanulator 'WANULATOR=$(pgrep wanulator2-h); ~/wanulator2-headless -dc good.wcfg; kill $WANULATOR'
+      - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc good.wcfg
+      - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc good.wcfg
+      - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc good.wcfg
+      # - ./send_cmd.expect 101 wanulator 'WANULATOR=$(pgrep wanulator2-h); ~/wanulator2-headless -dc good.wcfg; kill $WANULATOR'
+      # - ./send_cmd.expect 102 wanulator 'WANULATOR=$(pgrep wanulator2-h); ~/wanulator2-headless -dc good.wcfg; kill $WANULATOR'
+      # - ./send_cmd.expect 103 wanulator 'WANULATOR=$(pgrep wanulator2-h); ~/wanulator2-headless -dc good.wcfg; kill $WANULATOR'
     
