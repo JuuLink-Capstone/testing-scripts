@@ -4,15 +4,11 @@
 # 
 # Author: Calin Schurig on 26 Feb 2026
 # 
-# Description: This file provides a 5 minute test where links are each failed
-#   one minute after another, in the order of Starlink-1, then Starlink-2,
-#   then the BYU internet. Then, at minute 4, all links are restored. 
+# Description: This file provides a 3 minute test where Starlink-1 is
+#   degraded at minute 1 (additional input/output delay of 150 ms). At
+#   minute 2, Starlink-1 is restored.
 #
 ##########################################################################
-
-
-
-
   
 name: test_delay_150
 jobs:
