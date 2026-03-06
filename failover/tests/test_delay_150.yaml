@@ -1,6 +1,6 @@
 ##########################################################################
 #
-# Filename: test_drop_20.yaml
+# Filename: test_delay_150.yaml
 # 
 # Author: Calin Schurig on 26 Feb 2026
 # 
@@ -14,14 +14,14 @@
 
 
   
-name: test_drop_20
+name: test_delay_150
 jobs:
   - host: pve
     run_after_sec: 0
     run_after_min: 0
     run_after_hr: 0
-    workdir: ~/tests/test_drop_20
-    logfile: test_drop_20.log
+    workdir: ~/tests/test_delay_150
+    logfile: test_delay_150.log
     cp_files: # cp_files are pathed relative to the .yaml file, copied into the workdir
       - ../wanulator_configs/good.wcfg
       - ../wanulator_configs/delay_150.wcfg
@@ -29,6 +29,7 @@ jobs:
       - ../cp_file.expect
       - ../packet_capture.sh
     commands:
+      - echo "test_delay_150.yaml"
       - echo "Starting test at time $(date +%s)"
       - ./cp_file.expect 101 wanulator good.wcfg
       - ./cp_file.expect 101 wanulator delay_150.wcfg
@@ -45,13 +46,14 @@ jobs:
     run_after_sec: 0
     run_after_min: 0
     run_after_hr: 0
-    workdir: ~/tests/locust_test_drop_20
-    logfile: test_drop_20_locust.log
+    workdir: ~/tests/locust_test_delay_150
+    logfile: test_delay_150_locust.log
     cp_files:
       - ../../locust/locustfile.py
       - ../../locust/run_locust.sh
       - ../../locust/requirements.txt
     commands:
+      - echo "test_delay_150.yaml"
       - echo "Starting test at time $(date +%s)"
       - fping -i 1 -c 320 192.168.100.2 &
       - ./run_locust.sh 3m
@@ -60,8 +62,8 @@ jobs:
     run_after_sec: 0
     run_after_min: 1
     run_after_hr: 0
-    workdir: ~/tests/test_drop_20
-    logfile: test_drop_20.log
+    workdir: ~/tests/test_delay_150
+    logfile: test_delay_150.log
     commands:
       - echo "Degrading Starlink-1 at time $(date +%s)"
       - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc delay_150.wcfg
@@ -70,8 +72,8 @@ jobs:
   #   run_after_sec: 0
   #   run_after_min: 2
   #   run_after_hr: 0
-  #   workdir: ~/tests/test_drop_20
-  #   logfile: test_drop_20.log
+  #   workdir: ~/tests/test_delay_150
+  #   logfile: test_delay_150.log
   #   commands:
   #     - echo "Degrading Starlink-2 at time $(date +%s)"
   #     - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc delay_150.wcfg
@@ -80,8 +82,8 @@ jobs:
   #   run_after_sec: 0
   #   run_after_min: 3
   #   run_after_hr: 0
-  #   workdir: ~/tests/test_drop_20
-  #   logfile: test_drop_20.log
+  #   workdir: ~/tests/test_delay_150
+  #   logfile: test_delay_150.log
   #   commands:
   #     - echo "Degrading BYU link at time $(date +%s)"
   #     - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc delay_150.wcfg
@@ -91,8 +93,8 @@ jobs:
     run_after_sec: 0
     run_after_min: 2
     run_after_hr: 0
-    workdir: ~/tests/test_drop_20
-    logfile: test_drop_20.log
+    workdir: ~/tests/test_delay_150
+    logfile: test_delay_150.log
     commands:
       - echo "Restoring links at time $(date +%s)"
       # - cd ~/git/testing-scripts
@@ -106,8 +108,8 @@ jobs:
     run_after_sec: 0
     run_after_min: 3
     run_after_hr: 0
-    workdir: ~/tests/test_drop_20
-    logfile: test_drop_20.log
+    workdir: ~/tests/test_delay_150
+    logfile: test_delay_150.log
     commands:
       - echo "Ending packet capture at time $(date +%s)"
       # - ./cp_file.expect 101 wanulator good.wcfg
