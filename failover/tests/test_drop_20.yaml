@@ -120,4 +120,37 @@ jobs:
       # - ./send_cmd.expect 101 wanulator 'WANULATOR=$(pgrep wanulator2-h); ~/wanulator2-headless -dc good.wcfg; kill $WANULATOR'
       # - ./send_cmd.expect 102 wanulator 'WANULATOR=$(pgrep wanulator2-h); ~/wanulator2-headless -dc good.wcfg; kill $WANULATOR'
       # - ./send_cmd.expect 103 wanulator 'WANULATOR=$(pgrep wanulator2-h); ~/wanulator2-headless -dc good.wcfg; kill $WANULATOR'
+      - |
+        echo 'Configuration used:
+        Service Level Agreement(SLA)
+        Max Latency(ms)
+        60
+        Low Latency
+        Disabled
+        Maximum Jitter (ms)
+        20
+        Low Jitter
+        Disabled
+        Maximum Packet Loss(%)
+        30
+        Low Packet Loss
+        Disabled
+        Maximum Transmit Utilization
+        90
+        Maximum Receive Utilization
+        Connection Selection Method
+        weighted-round-robin
+        Recompute Timer(sec)
+        10
+        Mean Opinion Score (MOS)
+        Gradual Migration
+        Disabled
+        SLA Smoothing
+        Disabled
+        SLA Smoothing Interval(sec)
+        SLA Violation Damping
+        Disabled
+        SLA Damping Interval(sec)
+        (See configuration at https://sase-concerto.poc.versanow.net/app/BYU/config/profile/elements/application/forwarding-profile)
+        This configuration is the "Latecy-Jitter-Packetloss-Bandwidth-FP" last modified 2/20/2026, 9:29:14 AM semattiabyu'
     
