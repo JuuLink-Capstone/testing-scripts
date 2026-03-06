@@ -4,9 +4,9 @@
 # 
 # Author: Calin Schurig on 26 Feb 2026
 # 
-# Description: This file provides a 5 minute test where links are each failed
-#   one minute after another, in the order of Starlink-1, then Starlink-2,
-#   then the BYU internet. Then, at minute 4, all links are restored. 
+# Description: This file provides a 3 minute test where Starlink-1 is
+#   degraded at minute 1 (dropping every 5th packet, or 20%). At
+#   minute 2, Starlink-1 is restored.
 #
 ##########################################################################
 
@@ -29,6 +29,7 @@ jobs:
       - ../cp_file.expect
       - ../packet_capture.sh
     commands:
+      - echo "test_drop_20.yaml"
       - echo "Starting test at time $(date +%s)"
       - ./cp_file.expect 101 wanulator good.wcfg
       - ./cp_file.expect 101 wanulator drop_5th.wcfg
@@ -52,6 +53,7 @@ jobs:
       - ../../locust/run_locust.sh
       - ../../locust/requirements.txt
     commands:
+      - echo "test_drop_20.yaml"
       - echo "Starting test at time $(date +%s)"
       - fping -i 1 -c 320 192.168.100.2 &
       - ./run_locust.sh 3m
