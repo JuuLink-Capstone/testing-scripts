@@ -1,0 +1,159 @@
+##########################################################################
+#
+# Filename: test_drop_15.yaml
+# 
+# Author: Calin Schurig on 26 Feb 2026
+# 
+# Description: This file provides a 3 minute test where Starlink-1 is
+#   degraded at minute 1 (dropping every 15% of packets). At
+#   minute 3, Starlink-1 is restored. This is intended to induce "flutter"
+#   in the Versa's failover, which is set to swap at 30% packet drop. 
+#
+##########################################################################
+
+
+
+
+
+name: test_drop_15
+jobs:
+  - host: pve
+    run_after_sec: 0
+    run_after_min: 0
+    run_after_hr: 0
+    workdir: ~/tests/test_drop_15
+    logfile: test_drop_15.log
+    cp_files: # cp_files are pathed relative to the .yaml file, copied into the workdir
+      - ../wanulator_configs/good.wcfg
+      - ../wanulator_configs/drop_15.wcfg
+      - ../send_cmd.expect
+      - ../cp_file.expect
+      - ../packet_capture.sh
+    commands:
+      - echo "test_drop_15.yaml"
+      - echo "Starting test at time $(date +%s)"
+      - ./cp_file.expect 101 wanulator good.wcfg
+      - ./cp_file.expect 101 wanulator drop_15.wcfg
+      - ./cp_file.expect 102 wanulator good.wcfg
+      - ./cp_file.expect 102 wanulator drop_15.wcfg
+      - ./cp_file.expect 103 wanulator good.wcfg
+      - ./cp_file.expect 103 wanulator drop_15.wcfg
+      - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc good.wcfg
+      - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc good.wcfg
+      - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc good.wcfg
+      - ./packet_capture.sh -q enp1s0f0 enp1s0f1 enp1s0f2 enp1s0f3 enp2s0f0 enp2s0f1 enp2s0f2 enp2s0f3
+
+  - host: juulink-edge-1
+    run_after_sec: 0
+    run_after_min: 0
+    run_after_hr: 0
+    workdir: ~/tests/locust_test_drop_15
+    logfile: test_drop_15_locust.log
+    cp_files:
+      - ../../locust/locustfile.py
+      - ../../locust/run_locust.sh
+      - ../../locust/requirements.txt
+    commands:
+      - echo "test_drop_15.yaml"
+      - echo "Starting test at time $(date +%s)"
+      - fping -i 1 -c 320 192.168.100.2 &
+      - ./run_locust.sh 4m
+
+  - host: pve
+    run_after_sec: 0
+    run_after_min: 1
+    run_after_hr: 0
+    workdir: ~/tests/test_drop_15
+    logfile: test_drop_15.log
+    commands:
+      - echo "Degrading Starlink-1 at time $(date +%s)"
+      - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc drop_15.wcfg
+
+  # - host: pve
+  #   run_after_sec: 0
+  #   run_after_min: 2
+  #   run_after_hr: 0
+  #   workdir: ~/tests/test_drop_15
+  #   logfile: test_drop_15.log
+  #   commands:
+  #     - echo "Degrading Starlink-2 at time $(date +%s)"
+  #     - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc drop_15.wcfg
+
+  # - host: pve
+  #   run_after_sec: 0
+  #   run_after_min: 3
+  #   run_after_hr: 0
+  #   workdir: ~/tests/test_drop_15
+  #   logfile: test_drop_15.log
+  #   commands:
+  #     - echo "Degrading BYU link at time $(date +%s)"
+  #     - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc drop_15.wcfg
+
+
+  - host: pve
+    run_after_sec: 0
+    run_after_min: 3
+    run_after_hr: 0
+    workdir: ~/tests/test_drop_15
+    logfile: test_drop_15.log
+    commands:
+      - echo "Restoring links at time $(date +%s)"
+      # - cd ~/git/testing-scripts
+      # - ./cp_file.expect 101 wanulator good.wcfg
+      - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc good.wcfg
+      - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc good.wcfg
+      - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc good.wcfg
+      # - pkill -SIGINT packet_capture.sh
+  
+  - host: pve
+    run_after_sec: 0
+    run_after_min: 4
+    run_after_hr: 0
+    workdir: ~/tests/test_drop_15
+    logfile: test_drop_15.log
+    commands:
+      - echo "Ending packet capture at time $(date +%s)"
+      # - ./cp_file.expect 101 wanulator good.wcfg
+      # - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc good.wcfg
+      - pkill packet_capt
+      - pkill tshark
+      # - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc good.wcfg
+      # - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc good.wcfg
+      # - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc good.wcfg
+      # - ./send_cmd.expect 101 wanulator 'WANULATOR=$(pgrep wanulator2-h); ~/wanulator2-headless -dc good.wcfg; kill $WANULATOR'
+      # - ./send_cmd.expect 102 wanulator 'WANULATOR=$(pgrep wanulator2-h); ~/wanulator2-headless -dc good.wcfg; kill $WANULATOR'
+      # - ./send_cmd.expect 103 wanulator 'WANULATOR=$(pgrep wanulator2-h); ~/wanulator2-headless -dc good.wcfg; kill $WANULATOR'
+      - |
+        echo 'Configuration used:
+        Service Level Agreement(SLA)
+        Max Latency(ms)
+        60
+        Low Latency
+        Disabled
+        Maximum Jitter (ms)
+        20
+        Low Jitter
+        Disabled
+        Maximum Packet Loss(%)
+        30
+        Low Packet Loss
+        Disabled
+        Maximum Transmit Utilization
+        90
+        Maximum Receive Utilization
+        Connection Selection Method
+        weighted-round-robin
+        Recompute Timer(sec)
+        10
+        Mean Opinion Score (MOS)
+        Gradual Migration
+        Disabled
+        SLA Smoothing
+        Disabled
+        SLA Smoothing Interval(sec)
+        SLA Violation Damping
+        Disabled
+        SLA Damping Interval(sec)
+        (See configuration at https://sase-concerto.poc.versanow.net/app/BYU/config/profile/elements/application/forwarding-profile)
+        This configuration is the "Latecy-Jitter-Packetloss-Bandwidth-FP" last modified 2/20/2026, 9:29:14 AM semattiabyu'
+    

@@ -6,7 +6,7 @@
    <Params Speed="0"/>
   </SimFn>
   <SimFn Filter="0" Type="2" Name="Drop">
-   <Timing Chance="15" Type="3" Burst="1" Static="0"/>
+   <Timing Chance="15" Type="2" Burst="0" Static="1"/>
    <Params/>
   </SimFn>
  </Interface>
@@ -16,7 +16,7 @@
    <Params Speed="0"/>
   </SimFn>
   <SimFn Filter="0" Type="2" Name="Drop">
-   <Timing Chance="15" Type="3" Burst="1" Static="0"/>
+   <Timing Chance="15" Type="2" Burst="0" Static="1"/>
    <Params/>
   </SimFn>
  </Interface>
