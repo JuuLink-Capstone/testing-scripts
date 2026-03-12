@@ -1,0 +1,117 @@
+##########################################################################
+#
+# Filename: test_all.yaml
+# 
+# Author: Calin Schurig on 26 Feb 2026
+# 
+# Description: This file provides a 5 minute test where links are each failed
+#   one minute after another, in the order of Starlink-1, then Starlink-2,
+#   then the BYU internet. Then, at minute 4, all links are restored. 
+#
+##########################################################################
+
+
+
+
+
+name: no_capture
+jobs:
+  - host: pve
+    run_after_sec: 0
+    run_after_min: 0
+    run_after_hr: 0
+    workdir: ~/tests/no_capture
+    logfile: no_capture.log
+    cp_files: # cp_files are pathed relative to the .yaml file, copied into the workdir
+      - ../wanulator_configs/good.wcfg
+      - ../wanulator_configs/drop_100.wcfg
+      - ../send_cmd.expect
+      - ../cp_file.expect
+      - ../packet_capture.sh
+    commands:
+      - echo "Starting test at time $(date +%s)"
+      - ./cp_file.expect 101 wanulator good.wcfg
+      - ./cp_file.expect 101 wanulator drop_100.wcfg
+      - ./cp_file.expect 102 wanulator good.wcfg
+      - ./cp_file.expect 102 wanulator drop_100.wcfg
+      - ./cp_file.expect 103 wanulator good.wcfg
+      - ./cp_file.expect 103 wanulator drop_100.wcfg
+      - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc good.wcfg
+      - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc good.wcfg
+      - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc good.wcfg
+      # - ./packet_capture.sh -q enp1s0f0 enp1s0f1 enp1s0f2 enp1s0f3 enp2s0f0 enp2s0f1 enp2s0f2 enp2s0f3
+
+  - host: juulink-edge-1
+    run_after_sec: 0
+    run_after_min: 0
+    run_after_hr: 0
+    workdir: ~/tests/locust_no_capture
+    logfile: locust_no_capture.log
+    cp_files:
+      - ../../locust/locustfile.py
+      - ../../locust/run_locust.sh
+      - ../../locust/requirements.txt
+    commands:
+      - echo "Starting test at time $(date +%s)"
+      - fping -i 1 -c 1820 192.168.100.2 &
+      - ./run_locust.sh 30m
+
+  - host: pve
+    run_after_sec: 0
+    run_after_min: 6
+    run_after_hr: 0
+    workdir: ~/tests/no_capture
+    logfile: no_capture.log
+    commands:
+      - echo "Degrading Starlink-1 at time $(date +%s)"
+      - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc drop_100.wcfg
+
+  - host: pve
+    run_after_sec: 0
+    run_after_min: 12
+    run_after_hr: 0
+    workdir: ~/tests/no_capture
+    logfile: no_capture.log
+    commands:
+      - echo "Degrading Starlink-2 at time $(date +%s)"
+      - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc drop_100.wcfg
+
+  - host: pve
+    run_after_sec: 0
+    run_after_min: 18
+    run_after_hr: 0
+    workdir: ~/tests/no_capture
+    logfile: no_capture.log
+    commands:
+      - echo "Degrading BYU link at time $(date +%s)"
+      - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc drop_100.wcfg
+
+
+  - host: pve
+    run_after_sec: 0
+    run_after_min: 24
+    run_after_hr: 0
+    workdir: ~/tests/no_capture
+    logfile: no_capture.log
+    commands:
+      - echo "Restoring links at time $(date +%s)"
+      # - cd ~/git/testing-scripts
+      # - ./cp_file.expect 101 wanulator good.wcfg
+      - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc good.wcfg
+      - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc good.wcfg
+      - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc good.wcfg
+      # - pkill -SIGINT packet_capture.sh
+  
+  # - host: pve
+  #   run_after_sec: 0
+  #   run_after_min: 5
+  #   run_after_hr: 0
+  #   workdir: ~/tests/no_capture
+  #   logfile: no_capture.log
+  #   commands:
+  #     - echo "Ending packet capture at time $(date +%s)"
+      # - ./cp_file.expect 101 wanulator good.wcfg
+      # - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc good.wcfg
+      # - pkill packet_capt
+      # - pkill tshark
+    

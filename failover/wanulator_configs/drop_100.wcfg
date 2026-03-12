@@ -1,0 +1,23 @@
+<!DOCTYPE WANulatorConfigXML>
+<WANulatorConfigV2 NetworkMode="0">
+ <Interface IpMask="0" IpAddr="0.0.0.0" Name="ens18" UseDHCP="0">
+  <SimFn Filter="0" Type="6" Name="Limit">
+   <Timing Chance="0" Type="0" Burst="1" Static="0"/>
+   <Params Speed="0"/>
+  </SimFn>
+  <SimFn Filter="0" Type="2" Name="Drop">
+   <Timing Chance="100" Type="2" Burst="0" Static="1"/>
+   <Params/>
+  </SimFn>
+ </Interface>
+ <Interface IpMask="0" IpAddr="0.0.0.0" Name="ens19" UseDHCP="0">
+  <SimFn Filter="0" Type="6" Name="Limit">
+   <Timing Chance="0" Type="0" Burst="1" Static="1"/>
+   <Params Speed="0"/>
+  </SimFn>
+  <SimFn Filter="0" Type="2" Name="Drop">
+   <Timing Chance="100" Type="2" Burst="0" Static="1"/>
+   <Params/>
+  </SimFn>
+ </Interface>
+</WANulatorConfigV2>
