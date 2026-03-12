@@ -1,10 +1,18 @@
 from locust import HttpUser, task, between
 import time
 import random
+from locust import stats
+
+# Increase stats/logging resolution for CSV and console output.
+stats.HISTORY_STATS_INTERVAL_SEC = .25
+stats.CSV_STATS_INTERVAL_SEC = .25
+stats.CSV_STATS_FLUSH_INTERVAL_SEC = .25
+stats.CONSOLE_STATS_INTERVAL_SEC = .25
 
 class WebsiteUser(HttpUser):
     #how long a simulated user waits between tasks
-    wait_time = between (1, 5)
+    # wait_time = between (1, 5)
+    wait_time = 3
     
     # @task
     # def load_homepage(self):

@@ -54,4 +54,5 @@ locust \
   --spawn-rate "$SPAWN_RATE" \
   --run-time "$RUN_TIME" \
   --headless \
+  --csv-full-history \
   --csv "$CSV_PREFIX"
