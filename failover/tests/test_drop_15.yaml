@@ -126,34 +126,41 @@ jobs:
       - |
         echo 'Configuration used:
         Service Level Agreement(SLA)
-        Max Latency(ms)
-        60
-        Low Latency
-        Disabled
-        Maximum Jitter (ms)
-        20
-        Low Jitter
-        Disabled
-        Maximum Packet Loss(%)
-        30
-        Low Packet Loss
-        Disabled
+        Maximum Latency
+        130ms
+        Max Jitter
+        30ms
+        Max Packet Loss
+        10 %
         Maximum Transmit Utilization
-        90
+        N/A %
         Maximum Receive Utilization
+        N/A %
         Connection Selection Method
-        weighted-round-robin
-        Recompute Timer(sec)
-        10
+        Weighted Round Robin
+        Recompute Timer
+        10Sec
         Mean Opinion Score (MOS)
-        Gradual Migration
+        SLA Smoothing Interval
+        N/A Sec
+        SLA Violation Damping Interval
+        N/A Sec
+        Forward Error Correction
         Disabled
-        SLA Smoothing
+        Send FEC Packet To
+        Duplicate FEC Packet
+        No. of Data Packets per FEC Packets
+        Start When
+        Stop When
         Disabled
-        SLA Smoothing Interval(sec)
-        SLA Violation Damping
+        Circuit Utilization
+        Packet Replication
         Disabled
-        SLA Damping Interval(sec)
+        Start When
+        Replication Factor
+        Stop When
+        Disabled
+        Circuit Utilization
         (See configuration at https://sase-concerto.poc.versanow.net/app/BYU/config/profile/elements/application/forwarding-profile)
-        This configuration is the "Latecy-Jitter-Packetloss-Bandwidth-FP" last modified 2/20/2026, 9:29:14 AM semattiabyu'
+        This configuration is the "Latecy-Jitter-Packetloss-Bandwidth-FP" last modified 3/18/2026, 9:34:18 AM calin
     
