@@ -15,6 +15,8 @@ These scripts are created with the goal of automating failover testing. Listed b
 
 ### Prerequisites:
 
+Make sure you are running this on Linux, preferably Ubuntu. Windows Subsystem for Linux works just fine. To connect to the devices we use the test, you will also need to have tailscale set up according to [ART_002_Remote_Connection_to_starlinkone.docx](https://byu.app.box.com/file/2116730912991?s=jrpwljrhmy1i1xrsi884ymo650pmgcci)
+
 Before running any tests, you should run the following command:
 
 ```bash
@@ -38,7 +40,7 @@ To run a test, run the following command:
 python3 runner.py <path_to_test_yaml>
 ```
 
-Most tests are contained in yaml files are are located in the [tests](tests) directory. For example, if you are in the [failover](.) directory, you can run:
+Most tests are contained in yaml files and are located in the [tests](tests) directory. For example, if you are in the [failover](.) directory, you can run:
 
 ```bash
 python3 runner.py tests/test_all.yaml
