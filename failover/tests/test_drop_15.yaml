@@ -56,7 +56,7 @@ jobs:
     commands:
       - echo "test_drop_15.yaml"
       - echo "Starting test at time $(date +%s)"
-      - fping -i 1 -c 320 192.168.100.2 &
+      - fping -i 1 -c 250 192.168.100.2 &
       - ./run_locust.sh 4m
 
   - host: pve
