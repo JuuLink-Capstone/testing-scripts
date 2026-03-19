@@ -11,6 +11,47 @@ These scripts are created with the goal of automating failover testing. Listed b
 * Versa routers
 * Traffic generators
 
+## Running tests
+
+### Prerequisites:
+
+Before running any tests, you should run the following command:
+
+```bash
+bash setup.sh juulink-edge-1 pve
+```
+
+This copies over ssh keys to juulink-edge-1 and pve so that you don't have to enter in your password a million times. Additionally, it ensures that any packages required by the tests are installed. If you do not know what ssh keys are or you do not have them generated, see the following [link](https://www.ssh.com/academy/ssh/keygen).
+
+Additionally, [runner.py](runner.py) runs locally, and requires the pyYAML package to be installed. To install it on Ubuntu, run the following commands:
+
+```bash
+apt update
+apt install python3-yaml
+```
+
+### Running a test
+
+To run a test, run the following command:
+
+```bash
+python3 runner.py <path_to_test_yaml>
+```
+
+Most tests are contained in yaml files are are located in the [tests](tests) directory. For example, if you are in the [failover](.) directory, you can run:
+
+```bash
+python3 runner.py tests/test_all.yaml
+```
+
+To schedule a test for a time, a second argument can be passed to runner.py. For example, to schedule a test 10 minutes from now, run:
+
+```bash
+python3 runner.py tests/test_all.yaml "now + 10 min"
+```
+
+## Implementation Details
+
 To start a single test, three things need to happen:
 
 * Packet capture must be enabled (on the PVE host).
