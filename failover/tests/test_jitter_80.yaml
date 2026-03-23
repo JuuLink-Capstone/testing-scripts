@@ -24,7 +24,7 @@ jobs:
     logfile: test_jitter_80.log
     cp_files: # cp_files are pathed relative to the .yaml file, copied into the workdir
       - ../wanulator_configs/good.wcfg
-      - ../wanulator_configs/drop_15.wcfg
+      - ../wanulator_configs/jitter_80.wcfg
       - ../send_cmd.expect
       - ../cp_file.expect
       - ../packet_capture.sh
@@ -32,11 +32,11 @@ jobs:
       - echo "test_jitter_80.yaml"
       - echo "Starting test at time $(date +%s)"
       - ./cp_file.expect 101 wanulator good.wcfg
-      - ./cp_file.expect 101 wanulator drop_15.wcfg
+      - ./cp_file.expect 101 wanulator jitter_80.wcfg
       - ./cp_file.expect 102 wanulator good.wcfg
-      - ./cp_file.expect 102 wanulator drop_15.wcfg
+      - ./cp_file.expect 102 wanulator jitter_80.wcfg
       - ./cp_file.expect 103 wanulator good.wcfg
-      - ./cp_file.expect 103 wanulator drop_15.wcfg
+      - ./cp_file.expect 103 wanulator jitter_80.wcfg
       - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc good.wcfg
       - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc good.wcfg
       - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc good.wcfg
@@ -66,7 +66,7 @@ jobs:
     logfile: test_jitter_80.log
     commands:
       - echo "Degrading Starlink-1 at time $(date +%s)"
-      - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc drop_15.wcfg
+      - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc jitter_80.wcfg
 
   # - host: pve
   #   run_after_sec: 0
@@ -76,7 +76,7 @@ jobs:
   #   logfile: test_jitter_80.log
   #   commands:
   #     - echo "Degrading Starlink-2 at time $(date +%s)"
-  #     - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc drop_15.wcfg
+  #     - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc jitter_80.wcfg
 
   # - host: pve
   #   run_after_sec: 0
@@ -86,7 +86,7 @@ jobs:
   #   logfile: test_jitter_80.log
   #   commands:
   #     - echo "Degrading BYU link at time $(date +%s)"
-  #     - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc drop_15.wcfg
+  #     - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc jitter_80.wcfg
 
 
   - host: pve
