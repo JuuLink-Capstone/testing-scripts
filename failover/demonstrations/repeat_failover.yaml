@@ -1,0 +1,35 @@
+
+
+name: repeat_failover
+jobs:
+  - host: pve
+    run_after_sec: 0
+    run_after_min: 0
+    run_after_hr: 0
+    workdir: ~/demonstrations/repeat_failover
+    logfile: repeat_failover.log
+    cp_files: # cp_files are pathed relative to the .yaml file, copied into the workdir
+      - ../wanulator_configs/good.wcfg
+      - ../wanulator_configs/drop_100.wcfg
+      - ../send_cmd.expect
+      - ../cp_file.expect
+      - ../packet_capture.sh
+    commands:
+      - ./cp_file.expect 101 wanulator good.wcfg
+      - ./cp_file.expect 101 wanulator drop_100.wcfg
+      - ./cp_file.expect 102 wanulator good.wcfg
+      - ./cp_file.expect 102 wanulator drop_100.wcfg
+      - ./cp_file.expect 103 wanulator good.wcfg
+      - ./cp_file.expect 103 wanulator drop_100.wcfg
+      - ./send_cmd.expect 101 wanulator ~/wanulator2-headless -dc good.wcfg
+      - ./send_cmd.expect 102 wanulator ~/wanulator2-headless -dc good.wcfg
+      - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc good.wcfg
+      - echo "Starting demonstration at time $(date +%s)"
+      # - ./packet_capture.sh -q enp1s0f0 enp1s0f1 enp1s0f2 enp1s0f3 enp2s0f0 enp2s0f1 enp2s0f2 enp2s0f3
+      - while [ 1 ]; do
+      - sleep 20
+      - ./send_cmd.expect 103 wanulator ~/wanulator2-headless -dc drop_100.wcfg
+      - sleep 20
+      - ./send_cmd.expect 103 wanulatr ~/wanulator2-headless -dc good.wcfg
+      - done
+      # To end this demonstration, execute `atq` on pve to see which jobs are running. Then do `atrm <jobid>`.
