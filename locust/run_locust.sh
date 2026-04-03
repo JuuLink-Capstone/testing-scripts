@@ -7,8 +7,8 @@ VENV_DIR="locust-env"
 REQUIREMENTS_FILE="requirements.txt"
 LOCUSTFILE="locustfile.py"
 HOST="http://192.168.100.2"
-USERS=50
-SPAWN_RATE=5
+USERS=60
+SPAWN_RATE=8
 RUN_TIME="3m"
 
 # Create output directory with timestamp subdirectory
